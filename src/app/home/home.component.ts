@@ -13,16 +13,24 @@ import { HousingService } from '../housing.service';
   template: `
     <section>
       <form>
-        <input type="text" placeholder="Filter by city" />
-        <button class="primary" type="button">Search</button>
+        <!-- include a template variable in the input called #filter.-->
+        <input type="text" placeholder="Filter by city" #filter />
+        <!--attach an event handler to the "search" button.-->
+        <button
+          class="primary"
+          type="button"
+          (click)="filterResults(filter.value)"
+        >
+          Search
+        </button>
       </form>
     </section>
     <section class="results">
+      <!--iterate over values from the filteredLocationList array-->
       <app-housing-location
-        *ngFor="let housingLocation of housingLocationList"
+        *ngFor="let housingLocation of filteredLocationList"
         [housingLocation]="housingLocation"
-      >
-      </app-housing-location>
+      ></app-housing-location>
     </section>
   `,
   styleUrls: ['./home.component.css'],
@@ -33,7 +41,25 @@ export class HomeComponent {
   // Dependency injection is the mechanism that manages the dependencies of an app's components and the services that other components can use.
   housingService: HousingService = inject(HousingService);
   //The constructor is the first function that runs when this component is created. The code in the constructor will assign the housingLocationList the value returned from the call to getAllHousingLocations.
+
+  // The filteredLocationList hold the values that match the search criteria entered by the user.
+  filteredLocationList: HousingLocation[] = [];
+
   constructor() {
     this.housingLocationList = this.housingService.getAllHousingLocations();
+    // filteredLocationList should contain the total set of housing locations values by default when the page loads
+    this.filteredLocationList = this.housingLocationList;
+  }
+
+  // This function uses the String filter function to compare the value of the text parameter against the housingLocation.city property. You can update this function to match against any property or multiple properties for a fun exercise.
+  filterResults(text: string) {
+    if (!text) {
+      this.filteredLocationList = this.housingLocationList;
+    }
+
+    this.filteredLocationList = this.housingLocationList.filter(
+      (housingLocation) =>
+        housingLocation?.city.toLowerCase().includes(text.toLowerCase())
+    );
   }
 }
