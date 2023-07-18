@@ -70,10 +70,12 @@ export class DetailsComponent {
   housingLocation: HousingLocation | undefined;
   housingLocationId = -1;
   constructor() {
-    this.housingLocationId = Number(this.route.snapshot.params['id']);
-    this.housingLocation = this.housingService.getHousingLocationById(
-      this.housingLocationId
-    );
+    const housingLocationId = parseInt(this.route.snapshot.params['id'], 10);
+    this.housingService
+      .getHousingLocationById(housingLocationId)
+      .then((housingLocation) => {
+        this.housingLocation = housingLocation;
+      });
   }
 
   // In the following code, the FormControls may return null. This code uses the nullish coalescing operator to default to empty string if the value is null

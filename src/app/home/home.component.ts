@@ -46,9 +46,13 @@ export class HomeComponent {
   filteredLocationList: HousingLocation[] = [];
 
   constructor() {
-    this.housingLocationList = this.housingService.getAllHousingLocations();
+    this.housingService
+      .getAllHousingLocations()
+      .then((housingLocationList: HousingLocation[]) => {
+        this.housingLocationList = housingLocationList;
+        this.filteredLocationList = housingLocationList;
+      });
     // filteredLocationList should contain the total set of housing locations values by default when the page loads
-    this.filteredLocationList = this.housingLocationList;
   }
 
   // This function uses the String filter function to compare the value of the text parameter against the housingLocation.city property. You can update this function to match against any property or multiple properties for a fun exercise.
